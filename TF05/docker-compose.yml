@@ -1,0 +1,56 @@
+services:
+  frontend:
+    build: ./dashboard
+    container_name: tf05-frontend
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    networks:
+      - tf05-net
+
+  backend:
+    build: ./api
+    container_name: tf05-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./config:/app/config
+    depends_on:
+      - db
+      - redis
+    restart: unless-stopped
+    networks:
+      - tf05-net
+
+  db:
+    image: mysql:8.0
+    container_name: tf05-database
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: app
+      MYSQL_USER: user
+      MYSQL_PASSWORD: pass
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    restart: always
+    networks:
+      - tf05-net
+
+  redis:
+    image: redis:alpine
+    container_name: tf05-redis
+    ports:
+      - "6379:6379"
+    restart: always
+    networks:
+      - tf05-net
+
+volumes:
+  db_data:
+
+networks:
+  tf05-net:
+    driver: bridge

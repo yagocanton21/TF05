@@ -1,0 +1,19 @@
+CREATE DATABASE IF NOT EXISTS app;
+
+USE app;
+
+CREATE TABLE IF NOT EXISTS metrics_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    service_name VARCHAR(255) NOT NULL,
+    response_time INT,
+    status VARCHAR(50),
+    checked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS alerts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    service_name VARCHAR(255) NOT NULL,
+    level VARCHAR(50),
+    message TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
